@@ -63,18 +63,22 @@ function rectangleCollision(circle, rect) {
 
     if (unrotatedCirclePos.x + circle.radius > unrotated1.x && unrotatedCirclePos.x - circle.radius < unrotated3.x &&
         unrotatedCirclePos.y + circle.radius > unrotated1.y && unrotatedCirclePos.y - circle.radius < unrotated3.y) {
-        // There's a collision! Now construct two lines, one through R and 1, the other through R and 2. Depending on whether C is above or below each line, the collision is on the top, bottom, left, or right.
-        var y1 = (x) =>  x/unrotated1.x * unrotated1.y,
-            y2 = (x) => -x/unrotated1.x * unrotated1.y;
+        // There's a collision! Now construct four lines, each at a 45 degree angle to a corner. We can use whether the center of the ball is above or below each line to determine whether it's a top, bottom, left, or right hit.
+        var y1 = (x) =>  unrotated1.y + (x - unrotated1.x),
+            y2 = (x) => -unrotated1.y - (x - unrotated1.x),
+            y3 = (x) =>  unrotated1.y - (x + unrotated1.x),
+            y4 = (x) => -unrotated1.y + (x + unrotated1.x);
         var above1 = unrotatedCirclePos.y < y1(unrotatedCirclePos.x),
-            above2 = unrotatedCirclePos.y < y2(unrotatedCirclePos.x); // use < because HTML5 canvas draws negative y as up
+            above2 = unrotatedCirclePos.y < y2(unrotatedCirclePos.x),
+            above3 = unrotatedCirclePos.y < y3(unrotatedCirclePos.x),
+            above4 = unrotatedCirclePos.y < y4(unrotatedCirclePos.x); // use < because HTML5 canvas draws negative y as up
         var angle;
-        if ((above1 && above2) || (!above1 && !above2)) {
-            //     top                  bottom
-            angle = 0;
-        } else {
-            // left or right
+        if ((!above1 && above2) || (!above3 && above4)) {
+            //     left                  right
             angle = Math.PI/2;
+        } else {
+            // top or bottom
+            angle = 0;
         }
         return {"collision": true, "surfaceAngle": angle - rect.theta};
     } else {
