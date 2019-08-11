@@ -15,17 +15,13 @@ document.onmouseup = function(e) {
     InputFlags["click"] = true;
 };
 document.onmousemove = function(e) {
-    var x = e.clientX - window.innerWidth/2;
-
-    var y = e.clientY - HALFHEIGHT - 8;
-    InputFlags["mouseX"] = x;
-    InputFlags["mouseY"] = y;
+    InputFlags["mouseX"] = e.clientX - window.innerWidth/2;
+    InputFlags["mouseY"] = e.clientY - HALFHEIGHT - 8;
 };
 
 document.addEventListener("touchstart", function(e) {
-    InputFlags["mouseX"] = e.touches[0].clientX;
-    InputFlags["mouseY"] = e.touches[0].clientY;
-    if (e.touches[0].clientX - window.innerWidth/2 > 0) {
+    document.onmousemove(e.touches[0]);
+    if (InputFlags["mouseX"] > 0) {
         // Right arrow key
         InputFlags["37"] = false;
         InputFlags["39"] = true;
@@ -34,11 +30,11 @@ document.addEventListener("touchstart", function(e) {
         InputFlags["37"] = true;
         InputFlags["39"] = false;
     }
-}, false);
+    e.preventDefault();
+}, {passive: false});
 document.addEventListener("touchmove", function(e) {
-    InputFlags["mouseX"] = e.touches[0].clientX;
-    InputFlags["mouseY"] = e.touches[0].clientY;
-    if (e.touches[0].clientX - window.innerWidth/2 > 0) {
+    document.onmousemove(e.touches[0]);
+    if (InputFlags["mouseX"] > 0) {
         // Right arrow key
         InputFlags["37"] = false;
         InputFlags["39"] = true;
@@ -47,8 +43,11 @@ document.addEventListener("touchmove", function(e) {
         InputFlags["37"] = true;
         InputFlags["39"] = false;
     }
-}, false);
+    e.preventDefault();
+}, {passive: false});
 document.addEventListener("touchend", function(e) {
+    document.onmouseup();
     InputFlags["37"] = false;
     InputFlags["39"] = false;
-}, false);
+    e.preventDefault();
+}, {passive: false});

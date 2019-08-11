@@ -11,8 +11,8 @@ class Ball {
         this.equilibriumVel = WIDTH / 100;
         this.boostTimer = 0; // Boosts can only happen if boostTimer = 0.
 
-        this.uncollideSteps = 4; // Precision of collision rectification. Higher is exponentially better and more computationally intensive.
-        this.collisionAccuracy = 20; // Precision of collision detection. Higher is linearly better and more computationally intensive.
+        this.uncollideSteps = 10; // Precision of collision rectification. Higher is exponentially better and more computationally intensive.
+        this.collisionAccuracy = 5; // Precision of collision detection. Higher is linearly better and more computationally intensive.
     }
 
     reset() {
@@ -23,7 +23,7 @@ class Ball {
         // The game is boring when the ball travels in a flat horizontal
         // line for longer than a few seconds. To combat this, multiply the
         // angle by a small scaling factor whenever it gets too shallow.
-        const cutoff = pi/32;
+        const cutoff = pi/16;
         const correction = 1.01;
         var angle = Math.atan2(this.vel.y, this.vel.x);
         if (Math.abs(angle) < cutoff) {
@@ -33,13 +33,13 @@ class Ball {
             angle *= correction;
             angle += pi;
         }
-        const velMag = this.vel.getMagnitude();
-        this.vel = Vector2D.FromPolar(angle, velMag)
 
         // Apply a drag force until the ball reaches its equilibrium speed.
+        const velMag = this.vel.getMagnitude();
         var newMag = velMag + 0.025 * (this.equilibriumVel - velMag);
-        this.vel.scale(newMag / velMag);
+        this.vel = Vector2D.FromPolar(angle, newMag);
 
+        this.vel.scale(newMag / velMag);
         if (debug) {
             // Draw markers around the ball representing its cutoff for velocity adjustment.
             stroke(255, 0, 0);
@@ -56,12 +56,13 @@ class Ball {
     updatePhysics() {
         // Divide the movement of the ball into steps so that it doesn't move
         // through objects.
-        var steps = this.vel.getMagnitude() / this.radius * this.collisionAccuracy;
+        var steps = Math.ceil(this.vel.getMagnitude() / this.radius * this.collisionAccuracy);
+
         // Assume that the collisionObjects array will stay static for the frame.
         this.cachedCollisionObjects = this.getCollisionObjects();
 
         for (var i = 0; i < steps; i++) {
-            this._updatePhysics( Math.min(1, 1 / steps) );
+            this._updatePhysics( 1 / steps );
         }
 
         if (this.boostTimer > 0) {
@@ -106,7 +107,7 @@ class Ball {
             var object = collisionObjects[index].object;
 
             // There's a collision. Use binary search to find where it happened.
-            var vel = this.vel, pos;//this.vel.getShifted(collisionObjects[index].vel.getScaled(-1)), pos;
+            var vel = this.vel.getShifted(collisionObjects[index].vel.getScaled(-1)), pos;
             var high = 0, low = -1, mid, i;
             for (i = 0; i < this.uncollideSteps; i++) {
                 mid = (high + low) / 2;
