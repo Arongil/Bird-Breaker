@@ -59,24 +59,7 @@ class Ball {
         var steps = this.vel.getMagnitude() / this.radius * this.collisionAccuracy;
         // Assume that the collisionObjects array will stay static for the frame.
         this.cachedCollisionObjects = this.getCollisionObjects();
-        ////////////////////////////////////////////////////
-        var x = 0, y = 50, w = 400, h = 100, theta = 0.2;
-        this.cachedCollisionObjects.push({
-            "object": new Rect(x, y, w, h, theta),
-            "vel": new Vector2D(0, 0),
-            "code": () => {}
-        });
-        fill(255, 0, 0);
-        stroke(255, 0, 0);
 
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(-theta);
-
-        rect(0, 0, w, h);
-
-        ctx.restore();
-        ////////////////////////////////////////////////////
         for (var i = 0; i < steps; i++) {
             this._updatePhysics( Math.min(1, 1 / steps) );
         }
