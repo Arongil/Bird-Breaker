@@ -16,7 +16,7 @@ class BirdKing extends Bird {
     }
 
     hit() {
-        if (this.birdRain == false) {
+        if (this.birdRain == false && !this.falling) {
             this.lives -= 1;
 
             // Summon minions

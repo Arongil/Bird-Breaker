@@ -17,17 +17,22 @@ function setButtons(GC) {
             new Button(4/5 * HALFWIDTH, 15/16 * HALFHEIGHT, WIDTH / 6, HEIGHT / 24, "BACK", HALFHEIGHT / 16, function() {
                 GC.screen = "menu";
             }),
-            new Button(-HALFWIDTH / 2, -HALFHEIGHT / 5, 51/64 * HALFWIDTH, HALFHEIGHT / 5, "NORMAL", 11/72 * HALFHEIGHT, function() {
+            new Button(-HALFWIDTH / 2, -HALFHEIGHT / 5, 53/64 * HALFWIDTH, HALFHEIGHT / 5, "NORMAL", 11/72 * HALFHEIGHT, function() {
                 GC.screen = "game";
                 GC.level = "default";
                 GC.initLevel();
             }),
-            new Button(HALFWIDTH / 2, -HALFHEIGHT / 5, 51/64 * HALFWIDTH, HALFHEIGHT / 5, "ENDLESS", 11/72 * HALFHEIGHT, function() {
+            new Button(HALFWIDTH / 2, -HALFHEIGHT / 5, 53/64 * HALFWIDTH, HALFHEIGHT / 5, "ENDLESS", 11/72 * HALFHEIGHT, function() {
                 GC.screen = "game";
                 GC.level = "endless";
                 GC.initLevel();
             }),
-            new Button(-HALFWIDTH / 2, HALFHEIGHT / 16, 51/64 * HALFWIDTH, HALFHEIGHT / 5, "BIRD KING", 11/72 * HALFHEIGHT, function() {
+            new Button(-HALFWIDTH / 2, HALFHEIGHT / 16, 53/64 * HALFWIDTH, HALFHEIGHT / 5, "ZOMBIRD", 11/72 * HALFHEIGHT, function() {
+                GC.screen = "game";
+                GC.level = "graveyard";
+                GC.initLevel();
+            }),
+            new Button(HALFWIDTH / 2, HALFHEIGHT / 16, 53/64 * HALFWIDTH, HALFHEIGHT / 5, "BIRD KING", 11/72 * HALFHEIGHT, function() {
                 GC.screen = "game";
                 GC.level = "bird king";
                 GC.initLevel();
@@ -210,6 +215,34 @@ function setShopShelves(GC) {
                     "name": "4",
                     "description": "Using four propellers provides a 20% increase in plane speed."
                 }
+            ]
+        },
+        {
+            "name": "DOODADS",
+            "scroll": 0,
+            "items": [
+                {
+                    "cost": 1,
+                    "action": function() {
+                        if (GC.player.coins >= 1) {
+                            GC.player.coins -= 1;
+                            GC.ai = false;
+                        }
+                    },
+                    "name": "RI",
+                    "description": "Regular intelligence... no... unintelligence."
+                },
+                {
+                    "cost": 250,
+                    "action": function() {
+                        if (GC.player.coins >= 250) {
+                            GC.player.coins -= 250;
+                            GC.ai = true;
+                        }
+                    },
+                    "name": "AI",
+                    "description": "The label is a misprint. It really stands for Artificial Unintelligence."
+                },
             ]
         }
     ];

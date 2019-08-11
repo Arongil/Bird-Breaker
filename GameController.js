@@ -26,6 +26,8 @@ class GameController {
         this.slowMotion = false;
         this.slowMotionTimer = 0;
 
+        this.ai = false; // Is the artificial unintelligence playing?
+
         this.screen = "menu";
         this.level = "default";
         this.paused = false;
@@ -40,6 +42,14 @@ class GameController {
         this.levelSegment = 0;
         this.levels = {
             "default": function() {
+                GC.screen = "gameover";
+                // Reward the player with 5 coins for the succesfully completed level.
+                for (var i = 0; i < 5; i++) {
+                    var angle = pi*(1 + Math.random());
+                    GC.coins.push(new Coin(new Vector2D(0, 0), Vector2D.FromPolar(angle, HALFWIDTH / 150)));
+                }
+            },
+            "graveyard": function() {
                 GC.screen = "gameover";
                 // Reward the player with 5 coins for the succesfully completed level.
                 for (var i = 0; i < 5; i++) {
@@ -350,6 +360,9 @@ class GameController {
         if (this.level == "default" || this.level == "endless") {
             this.initBirdsDefault();
         }
+        else if (this.level == "graveyard") {
+            this.initBirdsGraveyard();
+        }
         else if (this.level == "bird king") {
             this.initBirdsBirdKing();
         }
@@ -359,6 +372,14 @@ class GameController {
         for (var row = 1; row < rows; row++) {
             for (var col = -row; col < row + 1; col++) {
                 this.birds.push(new Bird(new Vector2D((col+(Math.random()*2-1)/(row+1)) * WIDTH / (3*row), -(row + rows-4) * HALFHEIGHT / (rows+1))));
+            }
+        }
+    }
+    initBirdsGraveyard() {
+        var rows = 5;
+        for (var row = 1; row < rows; row++) {
+            for (var col = -row; col < row + 1; col++) {
+                this.birds.push(new Zombird(new Vector2D((col+(Math.random()*2-1)/(row+1)) * WIDTH / (3*row), -(row + rows-4) * HALFHEIGHT / (rows+1))));
             }
         }
     }

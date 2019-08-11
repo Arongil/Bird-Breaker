@@ -34,6 +34,12 @@ class Plane {
             this.omega -= this.turnSpeed;
         }
 
+        if (GC.ai && GC.screen == "game" && !(InputFlags["37"] || InputFlags["39"])) {
+            // artificial unintelligence, TM
+            // Always move toward the ball, with a preference toward where it's heading.
+            this.omega += this.turnSpeed * (2 / (1 + Math.exp((-this.pos.x + GC.ball.pos.x + GC.ball.vel.x*20)*20/WIDTH)) - 1);
+        }
+
         // Apply drag to omega and vel
         this.omega *= this.angularDrag;
         this.vel *= this.drag;
